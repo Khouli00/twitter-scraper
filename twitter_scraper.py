@@ -1,6 +1,7 @@
 import re
 from requests_html import HTMLSession, HTML
 from datetime import datetime
+import unicodedata
 
 session = HTMLSession()
 
@@ -36,7 +37,7 @@ def get_tweets(user, pages=25):
                     '.js-permalink')[0].attrs['data-conversation-id']
                 time = datetime.fromtimestamp(
                     int(tweet.find('._timestamp')[0].attrs['data-time-ms'])/1000.0)
-                interactions = [x.text for x in tweet.find(
+                interactions = [unicodedata.normalize('NFKD',x.text) for x in tweet.find(
                     '.ProfileTweet-actionCount')]
                 replies = int(interactions[0].split(" ")[0].replace(comma, ""))
                 retweets = int(interactions[1].split(" ")[
